@@ -8,7 +8,7 @@ class ProductDetailsScreen extends StatefulWidget {
 }
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
-  // ตัวแปรเก็บไซส์ที่เลือก (เริ่มที่ไซส์หหหห 8)
+  // ตัวแปรเก็บไซส์ที่เลือก (เริ่มหหที่ไซส์หหหห 8)
   int _selectedSizeIndex = 2;
   final List<String> _sizes = ['6', '7', '8', '9', '10'];
 
