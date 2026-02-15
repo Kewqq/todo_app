@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'screens/home_screen.dart'; // import หน้า Home
+import 'package:todo_app/screens/homescreen.dart';
+import 'screens/home_screennnn.dart'; // import หน้า Home
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // จำเป็นต้องมีบรรทัดนี้
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      home: const NewHomeScreen(),
     );
   }
 }
