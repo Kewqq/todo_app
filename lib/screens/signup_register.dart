@@ -43,7 +43,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                 const SizedBox(height: 80),
 
-                /// LOGO (ไม่ล้นแน่นอน)
+                /// LOGO
                 Center(
                   child: Stack(
                     alignment: Alignment.topRight,
