@@ -1,3 +1,16 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // เพิ่มบรรทัดนี้สำหรับ Firebase (ใช้ syntax แบบ Kotlin)
+        classpath("com.google.gms:google-services:4.4.2")
+    }
+}
+
+// ... (ตามด้วยโค้ดเดิมของคุณด้านล่าง) ...
+
 allprojects {
     repositories {
         google()
@@ -22,3 +35,4 @@ subprojects {
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
+
