@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:todo_app/screens/homescreen.dart';
-import 'screens/home_screennnn.dart'; // import หน้า Home
+import 'screens/home_screen.dart'; // เรียกใช้หน้า Home
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // จำเป็นต้องมีบรรทัดนี้
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(); // เชื่อมต่อ Firebase
   runApp(const MyApp());
 }
@@ -15,12 +14,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter To-Do',
+      debugShowCheckedModeBanner: false, // ปิดป้าย Debug มุมขวาบน
+      title: 'Todo App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFFF5555)),
+        useMaterial3: true,
+        fontFamily: 'Roboto', // (ถ้ามีฟอนต์)
       ),
-      home: const NewHomeScreen(),
+      home: const NewHomeScreen(), // เรียกหน้าแรก
     );
   }
 }
