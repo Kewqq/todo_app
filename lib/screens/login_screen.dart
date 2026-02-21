@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/screens/signup_register.dart';
+import 'package:todo_app/screens/signup_register.dart'; // เช็ก path ให้ตรงกับโฟลเดอร์ของคุณด้วยนะ
 import '../services/auth_service.dart';
 import 'home_screen.dart';
 
@@ -57,37 +57,6 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } else {
       _showSnack("Login ไม่สำเร็จ! อีเมลหรือรหัสผ่านผิด");
-    }
-  }
-
-  // --- ฟังก์ชันสมัครสมาชิก (Sign Up) ---
-  void _handleSignUp() async {
-    String email = _emailController.text.trim();
-    String password = _passwordController.text.trim();
-
-    if (email.isEmpty || password.isEmpty) {
-      _showSnack("กรุณากรอกอีเมลและรหัสผ่านเพื่อสมัคร");
-      return;
-    }
-
-    setState(() => _isLoading = true);
-
-    // สร้าง User ใหม่ใน Firebase
-    var user = await _authService.register(email, password);
-
-    setState(() => _isLoading = false);
-
-    if (user != null) {
-      _showSnack("สมัครสมาชิกสำเร็จ! กำลังเข้าสู่ระบบ...");
-      // ไปหน้า Home เหมือนกัน
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
-      }
-    } else {
-      _showSnack("สมัครไม่สำเร็จ (อีเมลนี้อาจมีคนใช้แล้ว)");
     }
   }
 
@@ -157,11 +126,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         _isObscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                         color: AppColors.secondaryColor,
                       ),
-                        onPressed: () {
-                          setState(() {
-                            _isObscure = !_isObscure;
-                          });
-                        },
+                      onPressed: () {
+                        setState(() {
+                          _isObscure = !_isObscure;
+                        });
+                      },
                     ),
                   ),
                 ),
@@ -184,17 +153,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Sign Up Link (กดแล้วสมัครเลย)
-                // ค้นหาโค้ดส่วนด้านล่างสุดของ LoginScreen
+                // Sign Up Link (เด้งไปหน้า SignUpPage)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text("Don't have an account? "),
                     GestureDetector(
                       onTap: () {
-                        // --- เปลี่ยนตรงนี้ ---
-                        // จากเดิมที่เป็น _handleSignUp
-                        // ให้เปลี่ยนเป็น Navigator.push ไปหน้า SignUpPage แทน
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => const SignUpPage()),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:todo_app/screens/profile_screen.dart';
 import '../services/auth_service.dart';
 import 'login_screen.dart';
 import 'detail_todo_screen.dart'; // ตรวจสอบให้แน่ใจว่าสร้างไฟล์นี้ไว้แล้วนะครับ
@@ -86,20 +87,18 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text("TO DO LIST",
             style: TextStyle(color: Color(0xFFFF8966), fontSize: 24, fontWeight: FontWeight.bold)),
         actions: [
-          // ปุ่ม Logout
+
           IconButton(
-            icon: const Icon(Icons.logout, color: Colors.black54),
-            onPressed: () async {
-              await AuthService().logout();
-              if (context.mounted) {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()),
-                      (route) => false,
-                );
-              }
-            },
-          ),
+              icon: const Icon(Icons.people_alt, color: Colors.black),
+              onPressed: () async {
+                if (context.mounted) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                        (route) => false,
+                  );
+                }
+              })
         ],
       ),
       body: Padding(

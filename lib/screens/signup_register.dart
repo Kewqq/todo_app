@@ -10,9 +10,9 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  // 1. สร้างตัวแปรรับค่า
+  // 1. สร้างตัวแปรรับค่า (เพิ่ม Fullname)
+  final TextEditingController _fullnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _fullNameController = TextEditingController(); // (เผื่อใช้ในอนาคต)
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
 
@@ -26,12 +26,13 @@ class _SignUpPageState extends State<SignUpPage> {
 
   // --- ฟังก์ชันสมัครสมาชิก ---
   void _handleSignUp() async {
+    String fullname = _fullnameController.text.trim(); // ดึงค่าชื่อ
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
     String confirmPassword = _confirmPasswordController.text.trim();
 
-    // Validation ตรวจสอบความถูกต้อง
-    if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+    // Validation ตรวจสอบความถูกต้อง (เพิ่มเช็ก fullname)
+    if (fullname.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
       _showSnack("กรุณากรอกข้อมูลให้ครบถ้วน");
       return;
     }
@@ -49,11 +50,13 @@ class _SignUpPageState extends State<SignUpPage> {
     setState(() => _isLoading = true); // เริ่มโหลด
 
     // ส่งไปสร้าง User ที่ Firebase
-    var user = await _authService.register(email, password);
+    var user = await _authService.register(email, password, fullname);
 
     setState(() => _isLoading = false); // หยุดโหลด
 
     if (user != null) {
+      // TODO: ถ้าระบบต้องการเก็บชื่อด้วย คุณอาจจะต้องนำตัวแปร fullname ไปเซฟลง Firestore ที่นี่
+
       // สมัครสำเร็จ -> ไปหน้า Home (แบบล้างประวัติหน้าเก่าทิ้ง)
       if (mounted) {
         Navigator.pushAndRemoveUntil(
@@ -84,7 +87,7 @@ class _SignUpPageState extends State<SignUpPage> {
               children: [
                 const SizedBox(height: 50),
 
-                // --- LOGO (ใช้โค้ดเดิมของคุณ) ---
+                // --- LOGO ---
                 Center(
                   child: Stack(
                     alignment: Alignment.topRight,
@@ -128,9 +131,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(height: 40),
 
                 // --- Input Fields ---
-                _input("Email", controller: _emailController),
+                // เพิ่มช่อง Fullname ตรงนี้
+                _input("Fullname", controller: _fullnameController),
                 const SizedBox(height: 18),
-                _input("Full Name", controller: _fullNameController),
+                _input("Email", controller: _emailController),
                 const SizedBox(height: 18),
                 _input("Password",
                     controller: _passwordController,
@@ -158,7 +162,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       elevation: 0,
                     ),
-                    onPressed: _isLoading ? null : _handleSignUp, // เชื่อมฟังก์ชันตรงนี้
+                    onPressed: _isLoading ? null : _handleSignUp,
                     child: _isLoading
                         ? const CircularProgressIndicator(color: Colors.white)
                         : const Text(
@@ -209,14 +213,13 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  // แก้ไข Widget _input ให้รับ controller
   Widget _input(String hint,
       {bool isPass = false,
         bool obscure = false,
         VoidCallback? toggle,
-        TextEditingController? controller}) { // เพิ่ม Parameter controller
+        TextEditingController? controller}) {
     return TextField(
-      controller: controller, // ผูกตัวแปรตรงนี้
+      controller: controller,
       obscureText: obscure,
       decoration: InputDecoration(
         hintText: hint,
