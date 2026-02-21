@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/screens/signup_register.dart';
-import '../services/auth_service.dart'; // เรียกใช้ Service ที่เราสร้างไว้
-import 'home_screen.dart'; // เรียกใช้หน้า Home
+import '../services/auth_service.dart';
+import 'home_screen.dart';
 
-// Class สี (ถ้าคุณแยกไฟล์แล้ว ให้ลบส่วนนี้ออกแล้ว import 'colors.dart' แทนครับ)
+// Class สี
 class AppColors {
   static const Color primaryColor = Color(0xFFF49E89);
   static const Color secondaryColor = Color(0xFF9E9E9E);
@@ -27,6 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // สถานะโหลด (เอาไว้หมุนติ้วๆ เวลาเน็ตช้า)
   bool _isLoading = false;
+  bool _isObscure = true; // true = ซ่อนรหัสผ่าน (ค่าเริ่มต้น)
 
   // --- ฟังก์ชัน Login ---
   void _handleLogin() async {
@@ -130,6 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Email Input
                 TextField(
                   controller: _emailController, // เชื่อมตัวแปร
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     hintText: 'Email',
                     hintStyle: const TextStyle(color: AppColors.secondaryColor),
@@ -143,14 +145,24 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Password Input
                 TextField(
                   controller: _passwordController, // เชื่อมตัวแปร
-                  obscureText: true,
+                  obscureText: _isObscure,
                   decoration: InputDecoration(
                     hintText: 'Password',
                     hintStyle: const TextStyle(color: AppColors.secondaryColor),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0), borderSide: const BorderSide(color: AppColors.secondaryColor)),
                     enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0), borderSide: const BorderSide(color: AppColors.secondaryColor)),
-                    suffixIcon: const Icon(Icons.visibility_off_outlined, color: AppColors.secondaryColor),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isObscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                        color: AppColors.secondaryColor,
+                      ),
+                        onPressed: () {
+                          setState(() {
+                            _isObscure = !_isObscure;
+                          });
+                        },
+                    ),
                   ),
                 ),
                 const SizedBox(height: 24),

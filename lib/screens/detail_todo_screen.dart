@@ -34,10 +34,10 @@ class _DetailTodoScreenState extends State<DetailTodoScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("ยืนยันการลบ 🗑️"),
-        content: const Text("คุณแน่ใจไหมว่าจะลบงานนี้?"),
+        title: const Text("Confirm delete🗑️"),
+        content: const Text("Are you sure you want to delete this?"),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("ยกเลิก")),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () {
@@ -45,7 +45,7 @@ class _DetailTodoScreenState extends State<DetailTodoScreen> {
               Navigator.pop(context);
               Navigator.pop(context);
             },
-            child: const Text("ลบเลย", style: TextStyle(color: Colors.white)),
+            child: const Text("Delete", style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -59,17 +59,17 @@ class _DetailTodoScreenState extends State<DetailTodoScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("แก้ไขงาน 📝"),
+        title: const Text("Edit 📝"),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(controller: titleController, decoration: const InputDecoration(labelText: "ชื่อหัวข้อ")),
+            TextField(controller: titleController, decoration: const InputDecoration(labelText: "Topic name")),
             const SizedBox(height: 10),
-            TextField(controller: descController, decoration: const InputDecoration(labelText: "รายละเอียด"), maxLines: 3),
+            TextField(controller: descController, decoration: const InputDecoration(labelText: "detail"), maxLines: 3),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("ยกเลิก")),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFFF5555)),
             onPressed: () {
@@ -83,7 +83,7 @@ class _DetailTodoScreenState extends State<DetailTodoScreen> {
               });
               Navigator.pop(context);
             },
-            child: const Text("บันทึก", style: TextStyle(color: Colors.white)),
+            child: const Text("Save", style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
