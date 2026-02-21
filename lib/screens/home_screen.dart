@@ -92,10 +92,10 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(Icons.people_alt, color: Colors.black),
               onPressed: () async {
                 if (context.mounted) {
-                  Navigator.pushAndRemoveUntil(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const ProfileScreen()),
-                        (route) => false,
+
                   );
                 }
               })

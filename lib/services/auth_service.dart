@@ -1,43 +1,41 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // 1. สมัครสมาชิก (Register)
-  Future<User?> register(String email, String password) async {
+  // สมัครสมาชิกพร้อมบันทึกชื่อลง Firestore
+  Future<User?> register(String fullname, String email, String password) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
-          email: email,
-          password: password
-      );
-      return result.user;
+          email: email, password: password);
+      User? user = result.user;
+
+      if (user != null) {
+        await user.updateDisplayName(fullname);
+        await _firestore.collection('users').doc(user.uid).set({
+          'uid': user.uid,
+          'fullname': fullname,
+          'email': email,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
+      return user;
     } catch (e) {
-      print("Register Error: $e");
       return null;
     }
   }
 
-  // 2. ล็อกอิน (Login)
   Future<User?> login(String email, String password) async {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
-          email: email,
-          password: password
-      );
+          email: email, password: password);
       return result.user;
     } catch (e) {
-      print("Login Error: $e");
       return null;
     }
   }
 
-  // 3. ล็อกเอาท์ (Logout)
-  Future<void> logout() async {
-    await _auth.signOut();
-  }
-
-  // 4. เช็คว่าใครล็อกอินอยู่ (Get Current User)
-  User? getCurrentUser() {
-    return _auth.currentUser;
-  }
+  Future<void> logout() async => await _auth.signOut();
 }

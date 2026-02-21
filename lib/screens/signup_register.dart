@@ -10,7 +10,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  // 1. สร้างตัวแปรรับค่า (เพิ่ม Fullname)
+  // 1. ตัวแปรรับค่า
   final TextEditingController _fullnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -22,16 +22,16 @@ class _SignUpPageState extends State<SignUpPage> {
   bool obscure1 = true;
   bool obscure2 = true;
 
-  final Color primary = const Color(0xFFE9967A); // สีส้มพีชตาม Theme
+  final Color primary = const Color(0xFFE88974); // ปรับสีส้มพีชให้ตรงกับหน้า Profile
 
   // --- ฟังก์ชันสมัครสมาชิก ---
   void _handleSignUp() async {
-    String fullname = _fullnameController.text.trim(); // ดึงค่าชื่อ
+    String fullname = _fullnameController.text.trim();
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
     String confirmPassword = _confirmPasswordController.text.trim();
 
-    // Validation ตรวจสอบความถูกต้อง (เพิ่มเช็ก fullname)
+    // Validation
     if (fullname.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
       _showSnack("กรุณากรอกข้อมูลให้ครบถ้วน");
       return;
@@ -47,18 +47,17 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
 
-    setState(() => _isLoading = true); // เริ่มโหลด
+    setState(() => _isLoading = true);
 
-    // ส่งไปสร้าง User ที่ Firebase
-    var user = await _authService.register(email, password, fullname);
+    // --- จุดที่แก้ไข: เรียงลำดับตัวแปรใหม่ให้ตรงกับ AuthService (fullname, email, password) ---
+    var user = await _authService.register(fullname, email, password);
 
-    setState(() => _isLoading = false); // หยุดโหลด
+    setState(() => _isLoading = false);
 
     if (user != null) {
-      // TODO: ถ้าระบบต้องการเก็บชื่อด้วย คุณอาจจะต้องนำตัวแปร fullname ไปเซฟลง Firestore ที่นี่
-
-      // สมัครสำเร็จ -> ไปหน้า Home (แบบล้างประวัติหน้าเก่าทิ้ง)
       if (mounted) {
+        _showSnack("สมัครสมาชิกสำเร็จ!");
+        // สมัครสำเร็จ -> ไปหน้า Home
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -66,7 +65,8 @@ class _SignUpPageState extends State<SignUpPage> {
         );
       }
     } else {
-      _showSnack("สมัครไม่สำเร็จ (อีเมลนี้อาจถูกใช้ไปแล้ว)");
+      // หาก user เป็น null แสดงว่ามี Error ใน AuthService (เช่น Email ซ้ำ หรือ Firestore บันทึกไม่ได้)
+      _showSnack("สมัครไม่สำเร็จ: อีเมลนี้อาจถูกใช้ไปแล้ว หรือเกิดข้อผิดพลาดที่ระบบ");
     }
   }
 
@@ -78,7 +78,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: const Color(0xFFF3F3F3),
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -87,43 +87,26 @@ class _SignUpPageState extends State<SignUpPage> {
               children: [
                 const SizedBox(height: 50),
 
-                // --- LOGO ---
+                // --- LOGO (ดีไซน์เดียวกับหน้า Profile) ---
                 Center(
-                  child: Stack(
-                    alignment: Alignment.topRight,
+                  child: Column(
                     children: [
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _letter("T"), const SizedBox(width: 30), _letter("O"),
+                              _letter("T O"),
+                              _letter("D O"),
+                              _letter("L I S T"),
                             ],
                           ),
-                          const SizedBox(height: 12),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              _letter("D"), const SizedBox(width: 30), _letter("O"),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              _letter("L"), const SizedBox(width: 28),
-                              _letter("I"), const SizedBox(width: 28),
-                              _letter("S"), const SizedBox(width: 28),
-                              _letter("T"),
-                            ],
-                          ),
+                          const SizedBox(width: 5),
+                          Icon(Icons.check_box_outlined, color: primary, size: 30),
                         ],
                       ),
-                      Positioned(
-                        right: -4, top: 8,
-                        child: Icon(Icons.check_box_outlined, color: primary, size: 24),
-                      )
                     ],
                   ),
                 ),
@@ -131,21 +114,22 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(height: 40),
 
                 // --- Input Fields ---
-                // เพิ่มช่อง Fullname ตรงนี้
-                _input("Fullname", controller: _fullnameController),
+                _input("Full Name", controller: _fullnameController, icon: Icons.person_outline),
                 const SizedBox(height: 18),
-                _input("Email", controller: _emailController),
+                _input("Email Address", controller: _emailController, icon: Icons.email_outlined),
                 const SizedBox(height: 18),
                 _input("Password",
                     controller: _passwordController,
                     isPass: true,
                     obscure: obscure1,
+                    icon: Icons.lock_outline,
                     toggle: () => setState(() => obscure1 = !obscure1)),
                 const SizedBox(height: 18),
                 _input("Confirm Password",
                     controller: _confirmPasswordController,
                     isPass: true,
                     obscure: obscure2,
+                    icon: Icons.lock_reset_outlined,
                     toggle: () => setState(() => obscure2 = !obscure2)),
 
                 const SizedBox(height: 35),
@@ -153,51 +137,42 @@ class _SignUpPageState extends State<SignUpPage> {
                 // --- SIGN UP BUTTON ---
                 SizedBox(
                   width: double.infinity,
-                  height: 52,
+                  height: 55,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                       elevation: 0,
                     ),
                     onPressed: _isLoading ? null : _handleSignUp,
                     child: _isLoading
                         ? const CircularProgressIndicator(color: Colors.white)
                         : const Text(
-                      "SIGN UP",
-                      style: TextStyle(
-                        color: Colors.white,
-                        letterSpacing: 2,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      "CREATE ACCOUNT",
+                      style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1),
                     ),
                   ),
                 ),
 
-                const SizedBox(height: 15),
+                const SizedBox(height: 20),
 
                 // --- Link to Login ---
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context); // กดแล้วย้อนกลับไปหน้า Login
-                  },
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
                   child: Text.rich(
                     TextSpan(
-                      text: "Have an account? ",
-                      style: const TextStyle(color: Colors.grey, fontSize: 12),
+                      text: "Already have an account? ",
+                      style: const TextStyle(color: Colors.grey),
                       children: [
                         TextSpan(
-                          text: "Log in",
+                          text: "Sign In",
                           style: TextStyle(color: primary, fontWeight: FontWeight.bold),
                         )
                       ],
                     ),
                   ),
                 ),
-
-                const SizedBox(height: 40),
+                const SizedBox(height: 30),
               ],
             ),
           ),
@@ -209,12 +184,13 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _letter(String text) {
     return Text(
       text,
-      style: TextStyle(fontSize: 34, fontWeight: FontWeight.w500, color: primary),
+      style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: primary, height: 1.1),
     );
   }
 
   Widget _input(String hint,
-      {bool isPass = false,
+      {required IconData icon,
+        bool isPass = false,
         bool obscure = false,
         VoidCallback? toggle,
         TextEditingController? controller}) {
@@ -223,21 +199,21 @@ class _SignUpPageState extends State<SignUpPage> {
       obscureText: obscure,
       decoration: InputDecoration(
         hintText: hint,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 18),
+        prefixIcon: Icon(icon, color: Colors.grey),
+        filled: true,
+        fillColor: const Color(0xFFF8F8F8),
+        contentPadding: const EdgeInsets.symmetric(vertical: 18),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Colors.grey),
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: Colors.grey.shade200),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: primary),
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: primary, width: 1.5),
         ),
         suffixIcon: isPass
             ? IconButton(
-          icon: Icon(
-            obscure ? Icons.visibility_off : Icons.visibility,
-            color: Colors.grey,
-          ),
+          icon: Icon(obscure ? Icons.visibility_off : Icons.visibility, color: Colors.grey),
           onPressed: toggle,
         )
             : null,
