@@ -96,6 +96,6 @@ assets:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/images/ToDo.png"
+  image_path: "assets/images/LoGo.png"
   adaptive_icon_background: "#E88974" # สีพื้นหลัง (เลือกตามสี Theme ของคุณ)
-  adaptive_icon_foreground: "assets/images/ToDo.png"
+  adaptive_icon_foreground: "assets/images/LoGo.png"
