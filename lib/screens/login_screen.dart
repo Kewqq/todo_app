@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/screens/signup_register.dart'; // เช็ก path ให้ตรงกับโฟลเดอร์ของคุณด้วยนะ
+import 'package:todo_app/screens/signup_register.dart';
 import '../services/auth_service.dart';
 import 'home_screen.dart';
 
